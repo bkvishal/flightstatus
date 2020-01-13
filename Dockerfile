@@ -1,5 +1,6 @@
 FROM openjdk:8-jdk-alpine
-COPY ./target/demo-0.0.1SNAPSHOT.jar /usr/src/demo/
-WORKDIR /usr/src/demo
+COPY ./target/flightstatus-0.0.1-SNAPSHOT.jar /usr/src/flightstatus/
+WORKDIR /usr/src/flightstatus
+RUN sh -c 'touch flightstatus-0.0.1-SNAPSHOT.jar'
 EXPOSE 8080
-CMD ["java", "-jar", "demo-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "flightstatus-0.0.1-SNAPSHOT.jar"]

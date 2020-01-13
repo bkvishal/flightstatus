@@ -1,16 +1,7 @@
 package com.eurowings.flightstatus.model;
 
-import com.google.gson.Gson;
 import lombok.Data;
 import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 @Data
 public class FlightStatus {
@@ -27,8 +18,6 @@ public class FlightStatus {
     private String arrivalAirportCode;
     private String estimatedArrivalDateTime;
     private String airlineLogo;
-
-    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
 
     public FlightStatus fsMapper(JSONObject responseData) {
         try {

@@ -1,6 +1,5 @@
 package com.eurowings.flightstatus.controller;
 
-import com.eurowings.flightstatus.model.FlightStatus;
 import com.eurowings.flightstatus.service.FlightStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
