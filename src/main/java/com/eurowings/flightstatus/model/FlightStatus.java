@@ -2,8 +2,10 @@ package com.eurowings.flightstatus.model;
 
 import lombok.Data;
 import org.json.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
+@Slf4j
 public class FlightStatus {
     private String id;
     private String flightPrefix;
@@ -35,6 +37,7 @@ public class FlightStatus {
             statusObject.put("statusColor", responseStatusObject.getString("color"));
             statusObject.put("lastUpdatedText", responseStatusObject.getString("lastUpdatedText"));
             this.setStatus(statusObject);
+            log.info("flight status for flight: " + this.getFlightPrefix() + this.getFlightNumber() + " is: " + statusObject.getString("statusDescription"));
 
             this.setDepartureAirport(responseData.getJSONObject("departureAirport").getString("name"));
             this.setDepartureAirportCode(responseData.getJSONObject("departureAirport").getString("fs"));
@@ -46,7 +49,9 @@ public class FlightStatus {
 
             this.setAirlineLogo(responseData.getJSONObject("ticketHeader").getString("iconURL"));
 
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            log.error("Error while mapping/setting response data to model! ", e);
+        }
 
         return this;
     }

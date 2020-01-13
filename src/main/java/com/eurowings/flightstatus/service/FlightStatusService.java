@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.json.JSONObject;
 import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class FlightStatusService {
     private final RestTemplate restTemplate;
 
@@ -29,7 +31,8 @@ public class FlightStatusService {
         Gson gson = new Gson();
         String flightStatusJsonString = "{}";
 
-        if (flightPrefix.isEmpty() || flightNo.isEmpty() || travelDate.isEmpty()) {
+        if (travelDate.isEmpty()) {
+            log.error("Empty response! travelDate is empty");
             return flightStatusJsonString;
         }
         String requestUrl = flightstatusBase.concat(flightPrefix)
@@ -41,8 +44,11 @@ public class FlightStatusService {
                             .concat("?rqid=")
                             .concat(flightstatusReqID);
 
+        log.info("flight status search request url is: " + requestUrl);
+
         ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
         if (response == null) {
+            log.error("Empty response! no reponse found for the given input");
             return flightStatusJsonString;
         }
 
@@ -53,7 +59,10 @@ public class FlightStatusService {
             flightStatus = flightStatus.fsMapper(responseObjData);
             flightStatusJsonString = gson.toJson(flightStatus);
 
-        } catch (Exception e) { }
+            log.info("flight status found!", flightStatusJsonString);
+        } catch (Exception e) {
+            log.error("Error Occurred while parsing the output data!", e);
+        }
 
         return flightStatusJsonString;
     }
