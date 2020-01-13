@@ -1,5 +1,6 @@
 package com.eurowings.flightstatus.controller;
 
+import com.eurowings.flightstatus.model.FlightStatus;
 import com.eurowings.flightstatus.service.FlightStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class StatusController {
         @RequestParam(value = "flightNo", required = false, defaultValue = "2465") String flightNo,
         @RequestParam(value = "travelDate", required = true) String travelDate
     ) {
-        this.flightStatusService.getFlightStatus(flightPrefix, flightNo, travelDate);
-        return new ResponseEntity<>("", HttpStatus.OK);
+        String flightStatus = this.flightStatusService.getFlightStatus(flightPrefix, flightNo, travelDate);
+        return new ResponseEntity<>(flightStatus, HttpStatus.OK);
     }
 }

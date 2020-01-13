@@ -1,46 +1,64 @@
 package com.eurowings.flightstatus.model;
 
+import com.google.gson.Gson;
 import lombok.Data;
+import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 @Data
 public class FlightStatus {
-    private long id;
+    private String id;
     private String flightPrefix;
+    private String flightNumber;
     private String flightId;
     private String aircraft;
-    private enum status {
-        ACTIVE("A", "Active"),
-        CANCELLED("C", "Cancelled"),
-        NODATA("DN", "No Data Yet"),
-        LANDED("L", "Landed"),
-        NOOPS("NO", "No Ops"),
-        REDIRECTED("R", "Redirected"),
-        SCHEDULED("S", "Scheduled"),
-        UNKNOWN("U", "Unknown");
+    private JSONObject status;
+    private String departureAirport;
+    private String departureAirportCode;
+    private String estimatedDepartureDateTime;
+    private String arrivalAirport;
+    private String arrivalAirportCode;
+    private String estimatedArrivalDateTime;
+    private String airlineLogo;
 
-        private final String statusVal;
-        private final String statusCode;
+    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
 
-        private status(String statusCode, String statusVal) {
-            this.statusCode = statusCode;
-            this.statusVal = statusVal;
-        }
-        private String getStatusCode() {
-            return this.statusCode;
-        }
-        private String getStatus() {
-            return this.statusVal;
-        }
-    };
-    private String estimatedDepartureAirport;
-    private String estimatedDepartureAirportCode;
-    private Date estimatedDepartureDateTime;
-    private String estimatedArrivalAirport;
-    private String estimatedArrivalAirportCode;
-    private Date estimatedArrivalDateTime;
+    public FlightStatus fsMapper(JSONObject responseData) {
+        try {
+            this.setId(Long.toString(System.nanoTime()));
+            this.setFlightPrefix(responseData.getJSONObject("resultHeader").getJSONObject("carrier").getString("fs"));
+            this.setFlightNumber(responseData.getJSONObject("resultHeader").getString("flightNumber"));
+            this.setFlightId(responseData.getString("flightId"));
+            this.setAircraft(responseData.getJSONObject("additionalFlightInfo").getJSONObject("equipment").getString("name"));
 
+            JSONObject responseStatusObject = responseData.getJSONObject("status");
+            JSONObject statusObject = new JSONObject();
+            statusObject.put("status", responseStatusObject.getString("status"));
+            statusObject.put("statusCode", responseStatusObject.getString("statusCode"));
+            statusObject.put("statusDescription", responseStatusObject.getString("statusDescription"));
+            statusObject.put("statusColor", responseStatusObject.getString("color"));
+            statusObject.put("lastUpdatedText", responseStatusObject.getString("lastUpdatedText"));
+            this.setStatus(statusObject);
 
+            this.setDepartureAirport(responseData.getJSONObject("departureAirport").getString("name"));
+            this.setDepartureAirportCode(responseData.getJSONObject("departureAirport").getString("fs"));
+            this.setEstimatedDepartureDateTime(responseData.getJSONObject("schedule").getString("scheduledDepartureUTC"));
+
+            this.setArrivalAirport(responseData.getJSONObject("arrivalAirport").getString("name"));
+            this.setArrivalAirportCode(responseData.getJSONObject("arrivalAirport").getString("fs"));
+            this.setEstimatedArrivalDateTime(responseData.getJSONObject("schedule").getString("scheduledArrivalUTC"));
+
+            this.setAirlineLogo(responseData.getJSONObject("ticketHeader").getString("iconURL"));
+
+        } catch (Exception e) { }
+
+        return this;
+    }
 }

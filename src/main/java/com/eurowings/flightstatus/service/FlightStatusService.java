@@ -1,14 +1,13 @@
 package com.eurowings.flightstatus.service;
 
 import com.eurowings.flightstatus.model.FlightStatus;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import org.json.JSONObject;
+import com.google.gson.Gson;
 
 @Service
 public class FlightStatusService {
@@ -25,30 +24,37 @@ public class FlightStatusService {
         this.restTemplate = restTemplate;
     }
 
-    public FlightStatus getFlightStatus(String flightPrefix, String flightNo, String travelDate) {
-        FlightStatus flightStatus = null;
+    public String getFlightStatus(String flightPrefix, String flightNo, String travelDate) {
+        FlightStatus flightStatus = new FlightStatus();
+        Gson gson = new Gson();
+        String flightStatusJsonString = "{}";
+
         if (flightPrefix.isEmpty() || flightNo.isEmpty() || travelDate.isEmpty()) {
-            return null;
+            return flightStatusJsonString;
         }
         String requestUrl = flightstatusBase.concat(flightPrefix)
                             .concat("/")
                             .concat(flightNo)
+                            .concat("/")
                             .concat(travelDate.replace('-', '/'))
                             .concat("/")
                             .concat("?rqid=")
                             .concat(flightstatusReqID);
 
-        String response = restTemplate.getForObject(requestUrl, String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity(requestUrl, String.class);
         if (response == null) {
-            return null;
+            return flightStatusJsonString;
         }
 
         try {
-            ObjectMapper objMapper = new ObjectMapper();
-            flightStatus = objMapper.readValue(response, objMapper.getTypeFactory().constructCollectionType(List.class, FlightStatus.class));
-        } catch (Exception e) {
+            JSONObject responseObj = new JSONObject(response.getBody());
+            JSONObject responseObjData = responseObj.getJSONObject("data");
 
-        }
-        return flightStatus;
+            flightStatus = flightStatus.fsMapper(responseObjData);
+            flightStatusJsonString = gson.toJson(flightStatus);
+
+        } catch (Exception e) { }
+
+        return flightStatusJsonString;
     }
 }
