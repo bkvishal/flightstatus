@@ -1,0 +1,23 @@
+{
+  "id": "4056382558237",
+  "flightPrefix": "EW",
+  "flightNumber": "2465",
+  "flightId": "1027729736",
+  "aircraft": "Airbus A319 (sharklets)",
+  "status": {
+    "map": {
+      "statusDescription": "On time",
+      "statusColor": "green",
+      "lastUpdatedText": "Status Last Updated More Than 3 Hours Ago",
+      "status": "Arrived",
+      "statusCode": "L"
+    }
+  },
+  "departureAirport": "London Heathrow Airport",
+  "departureAirportCode": "LHR",
+  "estimatedDepartureDateTime": "2020-01-13T18:35:00.000Z",
+  "arrivalAirport": "Stuttgart Airport",
+  "arrivalAirportCode": "STR",
+  "estimatedArrivalDateTime": "2020-01-13T20:15:00.000Z",
+  "airlineLogo": "https://d3brl4nqahsb3e.cloudfront.net/logos/png/150x50/ew-logo.png"
+}

@@ -16,6 +16,12 @@ Flight Status Serivce App
   - `flightPrefix`: the short code used by airlines [_for example:_ `EW` for `EuroWings`]
   - `flightNo`: the numeric flight number provided [_for example:_ `2465`]
   - `travelDate`: the date of travel [_date format_: `YYYY-MM-DD` - _for example:_ `2020-01-13`]
+
+**Docker and ELK Stack**
+- Run `docker-compose up -d`
+- Run `mvn spring-boot:run`
+- Then hit the exposed route (`/flight-status?flightPrefix=EW&flightNo=2465&travelDate=2020-01-14`) as described above
+- Then pointing `kibana` at `http://localhost:5601` will show the logs
   
 **Known Issues**:
 - The third party data source I have used is a free service, so it might have some limitation with respect to maximum number of calls per day, etc.
